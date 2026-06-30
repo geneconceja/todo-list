@@ -1,0 +1,9 @@
+.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+p{
+  display: inline;
+  padding: 0 4px;
+}
