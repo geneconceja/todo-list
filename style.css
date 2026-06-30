@@ -73,3 +73,7 @@ li.task{
 .task-div{
   display: flex;
 }
+
+.delete-action > button{
+  margin-left: 4px;
+}
