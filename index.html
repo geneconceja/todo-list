@@ -7,11 +7,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div>
-    <input type="text" id="inputTask">
-    <button type="button" id="add-task-btn">Add</button>
-    <ul id="tasks"><ul>
-  </div>
+  <main>
+    <header>
+      <h2>My To Do List</h2>
+    </header>
+
+    <div class="content">
+
+      <div>
+        <input type="text" id="inputTask">
+        <button type="button" id="add-task-btn" onclick="addTask()">Add</button>
+      </div>
+
+      <div id="tasks">
+      </div>
+      
+
+    </div>
+  </main>
   
 </body>
 </html>

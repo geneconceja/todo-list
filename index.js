@@ -1,18 +1,21 @@
 function displayTasks(){
 
-  const ul = document.getElementById("tasks");
-  ul.style.listStyleType = 'none';
-  ul.innerHTML = '';
+  const div = document.getElementById("tasks");
+  div.innerHTML = '';
 
   const taskList = getTasks();
 
   if(!taskList){
 
     let p = document.createElement('p');
+    p.classList.add("no-tasks")
     p.textContent = "No tasks yet";
-    ul.appendChild(p);
+    div.appendChild(p);
 
   }else{
+
+    let ul = document.createElement("ul");
+    ul.id = "tasks-list";
 
     for(const task of taskList){
 
@@ -28,11 +31,14 @@ function displayTasks(){
       if(task.isDone) p.classList.add("completed");
 
       let li = document.createElement("li");
+      li.classList.add("task");
 
       li.appendChild(checkBox);
       li.appendChild(p);
       ul.appendChild(li);
     }
+
+    div.appendChild(ul);
 
   }
 
@@ -46,22 +52,26 @@ function addTask(){
   let taskList = getTasks();
 
   if(!taskList){
+    localStorage.setItem("tasksCount", 1);
     localStorage.setItem("tasks", JSON.stringify([{id: 1, task: task.value, isDone: false}]));
   }else{
-    taskList.push({id: taskList.length, task: task.value, isDone: false});
+    let tasksCount = parseInt(localStorage.tasksCount);
+    taskList.push({id: ++tasksCount, task: task.value, isDone: false});
+    localStorage.setItem("tasksCount", tasksCount);
     localStorage.setItem("tasks", JSON.stringify(taskList));
   }
 
   task.value = '';
-
   displayTasks();
 
 }
 
 function getTasks(){
+
   let taskList = localStorage.getItem("tasks");
   if(!taskList) return;
   return JSON.parse(taskList);
+  
 }
 
 function checkTask(id){
@@ -79,6 +89,8 @@ function checkTask(id){
 // EVENT LISTENERS
 
 // checkbox listener
+
+
 document.getElementById("tasks").addEventListener("change", function(event){
 
   if (event.target.matches('input[type="checkbox"]')) {
@@ -88,9 +100,5 @@ document.getElementById("tasks").addEventListener("change", function(event){
 
 });
 
-// add task listener
-document.getElementById("add-task-btn").addEventListener('click', addTask);
-
-// document.getElementById
-localStorage.clear()
+localStorage.clear();
 displayTasks();
