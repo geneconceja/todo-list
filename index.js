@@ -2,8 +2,6 @@ let confirmingIds = new Set();
 
 function displayTasks(){
 
-  console.log("displayTasks is called");
-
   const div = document.getElementById("tasks");
   div.innerHTML = '';
 
@@ -107,7 +105,7 @@ function getTasks(){
 }
 
 function checkTask(id){
-  console.log("checkTask is called");
+  
   let taskList = getTasks();
   let target = taskList.find(task => task.id===id);
 
@@ -119,11 +117,13 @@ function checkTask(id){
 }
 
 function deleteTask(id){
+
   let taskList = getTasks();
   let updatedTasks = taskList.filter(task => task.id!==id);
 
   localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   displayTasks();
+
 }
 
 
@@ -131,7 +131,17 @@ function deleteTask(id){
 
 document.getElementById("input-task").addEventListener('keydown', e => e.key == 'Enter' && addTask());
 
+document.getElementById("tasks").addEventListener("change", function(event){
+
+  if (event.target.matches('.task-cb')) {
+    const id = Number(event.target.dataset.id);
+    checkTask(id);
+  }
+  
+});
+
 document.getElementById("tasks").addEventListener("click", function(event){
+
   if (event.target.matches('.open-delete-btn')) {
     const id = Number(event.target.dataset.id);
     confirmingIds.add(id);
@@ -144,10 +154,8 @@ document.getElementById("tasks").addEventListener("click", function(event){
     const id = Number(event.target.dataset.id);
     confirmingIds.delete(id);
     deleteTask(id);
-  }else if (event.target.matches('.task-cb')) {
-    const id = Number(event.target.dataset.id);
-    checkTask(id);
   }
+
 });
 
 displayTasks();
