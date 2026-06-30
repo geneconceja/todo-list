@@ -47,9 +47,9 @@ ul {
 
 li.task{
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
   margin-top: 8px;
 }
@@ -68,4 +68,8 @@ li.task{
 
 #tasks{
   width: 100%;
+}
+
+.task-div{
+  display: flex;
 }
