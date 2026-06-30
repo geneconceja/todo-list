@@ -2,6 +2,8 @@ let confirmingIds = new Set();
 
 function displayTasks(){
 
+  console.log("displayTasks is called");
+
   const div = document.getElementById("tasks");
   div.innerHTML = '';
 
@@ -25,11 +27,11 @@ function displayTasks(){
       checkBox.type = "checkbox";
       checkBox.dataset.id = task.id;
       checkBox.checked = task.isDone ? true : false;
-      checkBox.classList.add("task");
+      checkBox.classList.add("task-cb");
 
       let p = document.createElement("p");
       p.textContent = `${task.task} ${task.id}`;
-      if(task.isDone) p.classList.add("completed");
+      task.isDone ? p.classList.add("completed") : p.classList.remove("completed"); 
 
       let taskDiv = document.createElement("div");
       taskDiv.classList.add("task-div");
@@ -105,7 +107,7 @@ function getTasks(){
 }
 
 function checkTask(id){
-
+  console.log("checkTask is called");
   let taskList = getTasks();
   let target = taskList.find(task => task.id===id);
 
@@ -127,29 +129,25 @@ function deleteTask(id){
 
 // EVENT LISTENERS
 
-document.getElementById("tasks").addEventListener("change", function(event){
-  if (event.target.matches('input[type="checkbox"]')) {
-    const id = Number(event.target.dataset.id);
-    checkTask(id);
-  }
-});
-
 document.getElementById("input-task").addEventListener('keydown', e => e.key == 'Enter' && addTask());
 
 document.getElementById("tasks").addEventListener("click", function(event){
   if (event.target.matches('.open-delete-btn')) {
     const id = Number(event.target.dataset.id);
     confirmingIds.add(id);
+    displayTasks();
   }else if(event.target.matches('.cancel-delete')){
     const id = Number(event.target.dataset.id);
     confirmingIds.delete(id);
+    displayTasks();
   }else if(event.target.matches('.confirm-delete')){
     const id = Number(event.target.dataset.id);
     confirmingIds.delete(id);
     deleteTask(id);
-    return;
+  }else if (event.target.matches('.task-cb')) {
+    const id = Number(event.target.dataset.id);
+    checkTask(id);
   }
-  displayTasks();
 });
 
 displayTasks();
