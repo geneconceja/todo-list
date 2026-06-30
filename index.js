@@ -7,7 +7,7 @@ function displayTasks(){
 
   const taskList = getTasks();
 
-  if(!taskList){
+  if(taskList.length===0){
 
     let p = document.createElement('p');
     p.classList.add("no-tasks")
@@ -86,15 +86,10 @@ function addTask(){
 
   let taskList = getTasks();
 
-  if(!taskList){
-    localStorage.setItem("tasksCount", 1);
-    localStorage.setItem("tasks", JSON.stringify([{id: 1, task: task.value, isDone: false}]));
-  }else{
-    let tasksCount = parseInt(localStorage.tasksCount);
-    taskList.push({id: ++tasksCount, task: task.value, isDone: false});
-    localStorage.setItem("tasksCount", tasksCount);
-    localStorage.setItem("tasks", JSON.stringify(taskList));
-  }
+  let latestId = parseInt(localStorage.tasksLatestId) || 0;
+  taskList.push({id: ++latestId, task: task.value.trim(), isDone: false});
+  localStorage.setItem("tasksLatestId", latestId);
+  localStorage.setItem("tasks", JSON.stringify(taskList));
 
   task.value = '';
   displayTasks();
@@ -104,7 +99,7 @@ function addTask(){
 function getTasks(){
 
   let taskList = localStorage.getItem("tasks");
-  if(!taskList) return;
+  if(!taskList) return [];
   return JSON.parse(taskList);
 
 }
@@ -132,8 +127,6 @@ function deleteTask(id){
 
 // EVENT LISTENERS
 
-// checkbox listener
-
 document.getElementById("tasks").addEventListener("change", function(event){
   if (event.target.matches('input[type="checkbox"]')) {
     const id = Number(event.target.dataset.id);
@@ -147,24 +140,16 @@ document.getElementById("tasks").addEventListener("click", function(event){
   if (event.target.matches('.open-delete-btn')) {
     const id = Number(event.target.dataset.id);
     confirmingIds.add(id);
-    displayTasks();
-  }
-});
-
-document.getElementById("tasks").addEventListener("click", function(event){
-  if (event.target.matches('.cancel-delete')) {
+  }else if(event.target.matches('.cancel-delete')){
     const id = Number(event.target.dataset.id);
     confirmingIds.delete(id);
-    displayTasks();
-  }
-});
-
-document.getElementById("tasks").addEventListener("click", function(event){
-  if (event.target.matches('.confirm-delete')) {
+  }else if(event.target.matches('.confirm-delete')){
     const id = Number(event.target.dataset.id);
+    confirmingIds.delete(id);
     deleteTask(id);
+    return;
   }
+  displayTasks();
 });
 
-localStorage.clear();
 displayTasks();
