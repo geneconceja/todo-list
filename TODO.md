@@ -28,7 +28,7 @@
 ## Polish (Optional)
 - [ ] Filter buttons: All / Active / Completed
 - [ ] Task counter (remaining tasks)
-- [ ] "Clear completed" button
+- [x] "Clear completed" button
 - [ ] Basic animations/transitions
 
 ## Testing

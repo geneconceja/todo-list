@@ -67,6 +67,7 @@ li.task{
 
 #tasks{
   width: 100%;
+  height: 50vh;
 }
 
 .task-div{
@@ -75,4 +76,8 @@ li.task{
 
 .delete-action > button{
   margin-left: 4px;
+}
+
+#cancel-delete-completed, #confirm-delete-completed{
+  display: none;
 }

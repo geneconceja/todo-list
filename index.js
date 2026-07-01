@@ -1,9 +1,12 @@
 let confirmingIds = new Set();
+let selectedTasks = new Set();
+document.getElementById("delete-completed-tasks").disabled = true;
 
 function displayTasks(){
 
   const div = document.getElementById("tasks");
   div.innerHTML = '';
+  selectedTasks.clear();
 
   const taskList = getTasks();
 
@@ -29,7 +32,12 @@ function displayTasks(){
 
       let p = document.createElement("p");
       p.textContent = `${task.task} ${task.id}`;
-      task.isDone ? p.classList.add("completed") : p.classList.remove("completed"); 
+      if(task.isDone){
+        p.classList.add("completed");
+        selectedTasks.add(task.id);
+      }else{
+        p.classList.remove("completed");
+      }
 
       let taskDiv = document.createElement("div");
       taskDiv.classList.add("task-div");
@@ -76,6 +84,8 @@ function displayTasks(){
     div.appendChild(ul);
 
   }
+  
+  toggleDisableDeleteCompleted();
 
 }
 
@@ -126,6 +136,31 @@ function deleteTask(id){
 
 }
 
+function deleteCompletedTasks(){
+
+  let taskList = getTasks();
+  let updatedTasks = taskList.filter(task=>task.isDone===false);
+  localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+  let btn = document.getElementById("delete-completed-tasks");
+  let cancelBtn = document.getElementById("cancel-delete-completed");
+  let confirmBtn = document.getElementById("confirm-delete-completed");
+
+  btn.style.display = "inline-block";
+  cancelBtn.style.display = "none";
+  confirmBtn.style.display = "none";
+
+  displayTasks();
+
+}
+
+function toggleDisableDeleteCompleted(){
+  if(selectedTasks.size>0){
+    document.getElementById("delete-completed-tasks").disabled = false;
+  }else{
+    document.getElementById("delete-completed-tasks").disabled = true;
+  }
+}
 
 // EVENT LISTENERS
 
@@ -143,12 +178,10 @@ document.getElementById("tasks").addEventListener("change", function(event){
 document.getElementById("tasks").addEventListener("click", function(event){
 
   if (event.target.matches('.open-delete-btn')) {
-    const id = Number(event.target.dataset.id);
-    confirmingIds.add(id);
+    confirmingIds.add(Number(event.target.dataset.id));
     displayTasks();
   }else if(event.target.matches('.cancel-delete')){
-    const id = Number(event.target.dataset.id);
-    confirmingIds.delete(id);
+    confirmingIds.delete(Number(event.target.dataset.id));
     displayTasks();
   }else if(event.target.matches('.confirm-delete')){
     const id = Number(event.target.dataset.id);
@@ -157,5 +190,31 @@ document.getElementById("tasks").addEventListener("click", function(event){
   }
 
 });
+
+document.getElementById("delete-completed-tasks").addEventListener("click", function(event){
+  
+  let btn = document.getElementById("delete-completed-tasks");
+  let cancelBtn = document.getElementById("cancel-delete-completed");
+  let confirmBtn = document.getElementById("confirm-delete-completed");
+
+  btn.style.display = "none";
+  cancelBtn.style.display = "inline-block";
+  confirmBtn.style.display = "inline-block";
+
+});
+
+document.getElementById("cancel-delete-completed").addEventListener("click", function(event){
+  
+  let btn = document.getElementById("delete-completed-tasks");
+  let cancelBtn = document.getElementById("cancel-delete-completed");
+  let confirmBtn = document.getElementById("confirm-delete-completed");
+
+  btn.style.display = "inline-block";
+  cancelBtn.style.display = "none";
+  confirmBtn.style.display = "none";
+
+});
+
+document.getElementById("confirm-delete-completed").addEventListener("click", deleteCompletedTasks);
 
 displayTasks();
